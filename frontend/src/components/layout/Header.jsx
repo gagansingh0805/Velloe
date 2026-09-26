@@ -15,7 +15,12 @@ export default function Header({
 }) {
   const { user, isAdmin, isEmployee, switchPersona, logout, availablePersonas } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -54,9 +59,10 @@ export default function Header({
         <button
           type="button"
           role="switch"
-          aria-checked={theme === "dark"}
+          aria-checked={mounted ? theme === "dark" : true}
           onClick={onToggleTheme}
-          title={`Switch to ${theme === "dark" ? "Light" : "Dark"} mode`}
+          suppressHydrationWarning
+          title={`Switch to ${mounted && theme === "dark" ? "Light" : "Dark"} mode`}
           className="relative inline-flex items-center rounded-full p-[2px] cursor-pointer select-none flex-shrink-0 transition-colors duration-200 appearance-none outline-none focus-visible:ring-2 focus-visible:ring-zinc-400 bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 shadow-inner"
           style={{
             width: "50px",
@@ -69,8 +75,9 @@ export default function Header({
         >
           <span className="sr-only">Toggle theme</span>
           <span
+            suppressHydrationWarning
             className={`flex items-center justify-center rounded-full shadow-md transition-transform duration-200 ease-out border ${
-              theme === "dark"
+              (mounted ? theme === "dark" : true)
                 ? "translate-x-[22px] bg-zinc-950 text-zinc-100 border-zinc-700"
                 : "translate-x-0 bg-white text-amber-500 border-zinc-200/90"
             }`}
@@ -82,10 +89,10 @@ export default function Header({
               borderRadius: "9999px"
             }}
           >
-            {theme === "dark" ? (
-              <Moon className="w-3 h-3 text-zinc-100" />
-            ) : (
+            {mounted && theme === "light" ? (
               <Sun className="w-3 h-3 text-amber-500" />
+            ) : (
+              <Moon className="w-3 h-3 text-zinc-100" />
             )}
           </span>
         </button>
